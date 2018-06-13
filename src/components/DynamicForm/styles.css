@@ -30,3 +30,12 @@
   flex: 1;
   align-items: center;
 }
+
+.submit_button {
+  background-color: skyblue;
+  color: white;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 4px;
+  min-width: 100px;
+}

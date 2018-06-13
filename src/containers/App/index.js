@@ -6,6 +6,9 @@ import FormFields from "../../data/formFields";
 
 import DynamicForm from "../../components/DynamicForm/index";
 
+/**
+ * App started at 9:00 pm
+ */
 class App extends PureComponent {
   render() {
     return (
@@ -15,7 +18,7 @@ class App extends PureComponent {
           <h1 className="App-title">Dynamic Forms</h1>
         </header>
 
-        <DynamicForm fields={FormFields}/>
+        <DynamicForm schema={FormFields}/>
       </div>
     );
   }
