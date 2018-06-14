@@ -2,74 +2,57 @@ import React, {PureComponent} from 'react';
 import {FormFieldTypes} from "../../models/Form";
 import './styles.css';
 
+import FormField from "./components/FormField";
+
 class DynamicForm extends PureComponent {
   state = {
-    values: {}
+    formValues: {}
   }
 
   _onFieldValueChange = (event, field) => {
-    const {values} = this.state;
+    const {formValues} = this.state;
+    const {target={}} = event;
+    const {value} = target;
+
     this.setState({
-      values: {
-        ...values,
-        [field.key]: event.target.value
+      formValues: {
+        ...formValues,
+        [field.key]: value
       }
     });
   }
 
   fieldRenderer = (field) => {
     const {type, label, options, key} = field;
-    const {} = this.state;
 
     switch (type) {
       case FormFieldTypes.DATE:
-        return (
-          <div key={key + type} className="field_container">
-            <label className="label">{label}</label>
-            <input
-              className="input"
-              type="date"
-              onChange={(e) => this._onFieldValueChange(e, field)}/>
-          </div>
-        )
-
       case FormFieldTypes.STRING:
-        return (
-          <div key={label + type} className="field_container">
-            <label className="label">{label}</label>
-            <input
-              className="input"
-              type="text"
-              onChange={(e) => this._onFieldValueChange(e, field)}/>
-          </div>
-        )
-
       case FormFieldTypes.CHECKBOX:
-        return (
-          <div key={label + type} className="field_container">
-            <label className="label">{label}</label>
-            <input
-              className="input"
-              type="checkbox"
-              onChange={(e) => this._onFieldValueChange(e, field)}/>
-          </div>
-        )
+
+        return (<FormField
+          key={key + type}
+          type={field.type}
+          field={field}
+          label={label}
+          containerClass="field_container"
+          name={label}
+          value={field.defaultValue}
+          _onFieldValueChange={this._onFieldValueChange}/>)
 
       case FormFieldTypes.RADIO:
         return (
           <div key={label + type} className="field_container">
             <label className="label">{label}</label>
-            {options.map(option => (
-              <div key={option.value} className="radio_group">
-                <label className="label">{option.value}</label>
-                <input
-                  className="input"
-                  type="radio"
-                  value={option.key}
-                  name={field.label}
-                  onChange={(e) => this._onFieldValueChange(e, field)}/>
-              </div>
-            ))
+            {options.map(option => (<FormField
+              value={option.value}
+              label={option.value}
+              key={label + option.value}
+              type={field.type}
+              field={field}
+              containerClass="radio_group"
+              name={field.label}
+              _onFieldValueChange={this._onFieldValueChange}/>))
 }
           </div>
         )
