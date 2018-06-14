@@ -71,13 +71,13 @@ class DynamicForm extends PureComponent {
     validations.map(rule => {
       switch (rule.type) {
         case ValidationRuleTypes.MIN_WORDS:
-
           const words = !!value
             ? value.split(" ")
             : [];
           if (words && words.length < rule.value) {
             messages.push(rule.message);
           }
+          break;
 
         case ValidationRuleTypes.MIN_DATE_DIFFERENCE:
           const diff = moment(value).diff(moment(), 'years');
@@ -85,12 +85,13 @@ class DynamicForm extends PureComponent {
           if (diff < rule.value) {
             messages.push(rule.message);
           }
+          break;
 
         case ValidationRuleTypes.REQUIRED:
-
           if (rule.value && !value) {
             messages.push(rule.message);
           }
+          break;
 
         default:
           break;
@@ -103,13 +104,10 @@ class DynamicForm extends PureComponent {
   validateForm = (formData) => {
     const {schema} = this.props;
 
-    const messages = schema.reduce((arr, field) => {
-      const messagesForValue = this.runValidations(field.key, formData[field.key], field.validations);
-      return arr.concat(messagesForValue);
+    return schema.reduce((arr, field) => {
+      const messagesForField = this.runValidations(field.key, formData[field.key], field.validations);
+      return arr.concat(messagesForField);
     }, []);
-
-    console.log(messages);
-
   }
 
   onFormSubmit = (event) => {
@@ -117,7 +115,14 @@ class DynamicForm extends PureComponent {
     const {
       formData = {}
     } = this.state;
-    this.validateForm(formData);
+    const validationErrors = this.validateForm(formData);
+
+    if (validationErrors.length > 0) {
+      alert(validationErrors.join("\n"));
+    } else {
+      console.log(formData);
+
+    }
   }
 
   render() {
