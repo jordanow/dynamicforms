@@ -2,12 +2,12 @@ import React, {PureComponent} from 'react';
 import logo from '../../assets/logo.svg';
 import './styles.css';
 
-import FormFields from "../../data/formFields";
+import FormSchema from "../../models/Form";
 
 import DynamicForm from "../../components/DynamicForm/index";
 
 /**
- * App started at 9:00 pm
+ * App started at 13 June 9:00 pm
  */
 class App extends PureComponent {
   render() {
@@ -18,7 +18,7 @@ class App extends PureComponent {
           <h1 className="App-title">Dynamic Forms</h1>
         </header>
 
-        <DynamicForm schema={FormFields}/>
+        <DynamicForm schema={FormSchema}/>
       </div>
     );
   }

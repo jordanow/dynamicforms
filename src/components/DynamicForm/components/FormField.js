@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react';
 
+// Generic Form Field component
 export default class FormField extends PureComponent {
   render() {
     const {label, type,name, value, _onFieldValueChange, field, containerClass} = this.props;

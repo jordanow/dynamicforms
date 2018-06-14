@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {FormFieldTypes, ValidationRuleTypes} from "../../models/Form";
+import {FormFieldTypes, ValidationRuleTypes} from "../../models/FormConstants";
 import './styles.css';
 import moment from "moment";
 
@@ -10,6 +10,7 @@ class DynamicForm extends PureComponent {
     formData: {}
   }
 
+  // Upon field value update -> update the values in the component state
   _onFieldValueChange = (event, field) => {
     const {formData} = this.state;
     const {
@@ -25,6 +26,7 @@ class DynamicForm extends PureComponent {
     });
   }
 
+  // Field renderer takes care of managing the display of each form field
   fieldRenderer = (field) => {
     const {type, label, options, key} = field;
 
@@ -65,6 +67,8 @@ class DynamicForm extends PureComponent {
     }
   }
 
+  // Run validations
+  // Would need custom logic for each and every validation type
   runValidations = (key, value, validations = []) => {
     const messages = [];
 
@@ -101,6 +105,9 @@ class DynamicForm extends PureComponent {
     return messages;
   }
 
+  /**
+   * Validate form by validating all the fields specified in the schema with their corresponding values in formData
+   */
   validateForm = (formData) => {
     const {schema} = this.props;
 
@@ -110,6 +117,11 @@ class DynamicForm extends PureComponent {
     }, []);
   }
 
+  /**
+   *
+   * Upon form submit run validations and show errors if any
+   * The form data should ideally be exported via a CSV or sent to clipboard
+   */
   onFormSubmit = (event) => {
     event.preventDefault();
     const {
@@ -121,7 +133,6 @@ class DynamicForm extends PureComponent {
       alert(validationErrors.join("\n"));
     } else {
       console.log(formData);
-
     }
   }
 
