@@ -1,22 +1,25 @@
 import React, {PureComponent} from 'react';
-import {FormFieldTypes} from "../../models/Form";
+import {FormFieldTypes, ValidationRuleTypes} from "../../models/Form";
 import './styles.css';
+import moment from "moment";
 
 import FormField from "./components/FormField";
 
 class DynamicForm extends PureComponent {
   state = {
-    formValues: {}
+    formData: {}
   }
 
   _onFieldValueChange = (event, field) => {
-    const {formValues} = this.state;
-    const {target={}} = event;
+    const {formData} = this.state;
+    const {
+      target = {}
+    } = event;
     const {value} = target;
 
     this.setState({
-      formValues: {
-        ...formValues,
+      formData: {
+        ...formData,
         [field.key]: value
       }
     });
@@ -62,9 +65,59 @@ class DynamicForm extends PureComponent {
     }
   }
 
+  runValidations = (key, value, validations = []) => {
+    const messages = [];
+
+    validations.map(rule => {
+      switch (rule.type) {
+        case ValidationRuleTypes.MIN_WORDS:
+
+          const words = !!value
+            ? value.split(" ")
+            : [];
+          if (words && words.length < rule.value) {
+            messages.push(rule.message);
+          }
+
+        case ValidationRuleTypes.MIN_DATE_DIFFERENCE:
+          const diff = moment(value).diff(moment(), 'years');
+
+          if (diff < rule.value) {
+            messages.push(rule.message);
+          }
+
+        case ValidationRuleTypes.REQUIRED:
+
+          if (rule.value && !value) {
+            messages.push(rule.message);
+          }
+
+        default:
+          break;
+      }
+      return rule;
+    });
+    return messages;
+  }
+
+  validateForm = (formData) => {
+    const {schema} = this.props;
+
+    const messages = schema.reduce((arr, field) => {
+      const messagesForValue = this.runValidations(field.key, formData[field.key], field.validations);
+      return arr.concat(messagesForValue);
+    }, []);
+
+    console.log(messages);
+
+  }
+
   onFormSubmit = (event) => {
     event.preventDefault();
-    console.log(this.state);
+    const {
+      formData = {}
+    } = this.state;
+    this.validateForm(formData);
   }
 
   render() {
